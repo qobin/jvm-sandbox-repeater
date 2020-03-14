@@ -126,21 +126,18 @@ public class RegressController {
             }
         });
         context.setTimeout(1000);
-        ExecutorInner.execute(new Runnable() {
-            @Override
-            public void run() {
-                RepeaterResult<Regress> pr = regressService.getRegress(name);
-                try {
-                    PrintWriter out = context.getResponse().getWriter();
-                    context.getResponse().setCharacterEncoding("UTF-8");
-                    context.getResponse().setContentType("application/json");
-                    out.write(JSON.toJSONString(pr));
-                    out.flush();
-                } catch (Exception e) {
-                    // ignore
-                }
-                context.complete();
+        ExecutorInner.execute(() -> {
+            RepeaterResult<Regress> pr = regressService.getRegress(name);
+            try {
+                PrintWriter out = context.getResponse().getWriter();
+                context.getResponse().setCharacterEncoding("UTF-8");
+                context.getResponse().setContentType("application/json");
+                out.write(JSON.toJSONString(pr));
+                out.flush();
+            } catch (Exception e) {
+                // ignore
             }
+            context.complete();
         });
         return null;
     }
